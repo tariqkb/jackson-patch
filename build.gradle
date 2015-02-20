@@ -1,0 +1,82 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = "io.progix.jackson"
+archivesBaseName = "jackson-patch"
+version = "0.1.0"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.0'
+}
+
+test {
+    filter {
+        includeTestsMatching "io.progix.jackson.test.*"
+    }
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from Javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Jackson Patch'
+                description 'An implementation of the HTTP method PATCH using RFC6902 using the Jackson JSON processor'
+                url 'https://github.com/tbugrara/jackson-patch'
+                scm {
+                    url 'scm:git:git@github.com:tbugrara/jackson-patch.git'
+                    connection 'scm:git:git@github.com:tbugrara/jackson-patch.git'
+                    developerConnection 'git@github.com:tbugrara/jackson-patch.git'
+                }
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'tbugrara'
+                        name 'Tariq Bugrara'
+                        email 'tbugrara@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
