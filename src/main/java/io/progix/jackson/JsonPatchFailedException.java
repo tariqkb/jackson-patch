@@ -1,16 +1,24 @@
 package io.progix.jackson;
 
-public class PatchFormatException extends Exception {
+public class JsonPatchFailedException extends RuntimeException {
 
-    public PatchFormatException(JsonPatchInstruction instruction, String message) {
+    public JsonPatchFailedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public JsonPatchFailedException(String message) {
+        super(message);
+    }
+
+    public JsonPatchFailedException(JsonPatchInstruction instruction, String message) {
         super(formatInstruction(instruction) + " failed: " + message);
     }
 
-    public PatchFormatException(JsonPatchInstruction instruction, String message, Throwable cause) {
+    public JsonPatchFailedException(JsonPatchInstruction instruction, String message, Throwable cause) {
         super(formatInstruction(instruction) + " failed: " + message, cause);
     }
 
-    public PatchFormatException(JsonPatchInstruction instruction, Throwable cause) {
+    public JsonPatchFailedException(JsonPatchInstruction instruction, Throwable cause) {
         super(formatInstruction(instruction) + " failed: ", cause);
     }
 

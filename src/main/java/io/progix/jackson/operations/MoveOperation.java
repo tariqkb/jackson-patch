@@ -8,13 +8,13 @@ import io.progix.jackson.JsonPatchUtil;
 
 import java.io.IOException;
 
-public class AddOperation {
+public class MoveOperation {
 
     public static JsonNode apply(JsonPatchInstruction instruction, JsonNode rootNode) throws IOException {
 
-        JsonNode valueNode = instruction.getValue();
-
         try {
+            JsonNode valueNode = JsonPatchUtil.at(rootNode, instruction.getFrom());
+            rootNode = JsonPatchUtil.remove(instruction.getFrom(), rootNode);
             rootNode = JsonPatchUtil.put(valueNode, instruction.getPath(), rootNode);
         } catch (JsonPatchFormatException e) {
             throw new JsonPatchFailedException(instruction, e);
@@ -22,5 +22,4 @@ public class AddOperation {
 
         return rootNode;
     }
-
 }

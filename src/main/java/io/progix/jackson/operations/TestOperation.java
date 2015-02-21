@@ -8,19 +8,16 @@ import io.progix.jackson.JsonPatchUtil;
 
 import java.io.IOException;
 
-public class AddOperation {
+public class TestOperation {
 
-    public static JsonNode apply(JsonPatchInstruction instruction, JsonNode rootNode) throws IOException {
-
-        JsonNode valueNode = instruction.getValue();
+    public static void apply(JsonPatchInstruction instruction, JsonNode root) throws IOException {
 
         try {
-            rootNode = JsonPatchUtil.put(valueNode, instruction.getPath(), rootNode);
+            if (!JsonPatchUtil.test(instruction.getValue(), instruction.getPath(), root)) {
+                throw new JsonPatchFailedException(instruction, "Test failed");
+            }
         } catch (JsonPatchFormatException e) {
             throw new JsonPatchFailedException(instruction, e);
         }
-
-        return rootNode;
     }
-
 }
