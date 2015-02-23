@@ -6,11 +6,9 @@ import io.progix.jackson.JsonPatchFormatException;
 import io.progix.jackson.JsonPatchInstruction;
 import io.progix.jackson.JsonPatchUtil;
 
-import java.io.IOException;
-
 public class TestOperation {
 
-    public static void apply(JsonPatchInstruction instruction, JsonNode root) throws IOException {
+    public static void apply(JsonPatchInstruction instruction, JsonNode root) throws JsonPatchFailedException {
 
         try {
             if (!JsonPatchUtil.test(instruction.getValue(), instruction.getPath(), root)) {

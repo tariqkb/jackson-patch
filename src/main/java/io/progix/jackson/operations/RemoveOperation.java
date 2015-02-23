@@ -6,11 +6,9 @@ import io.progix.jackson.JsonPatchFormatException;
 import io.progix.jackson.JsonPatchInstruction;
 import io.progix.jackson.JsonPatchUtil;
 
-import java.io.IOException;
-
 public class RemoveOperation {
 
-    public static JsonNode apply(JsonPatchInstruction instruction, JsonNode rootNode) throws IOException {
+    public static JsonNode apply(JsonPatchInstruction instruction, JsonNode rootNode) throws JsonPatchFailedException {
 
         try {
             rootNode = JsonPatchUtil.remove(instruction.getPath(), rootNode);
