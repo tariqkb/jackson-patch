@@ -14,16 +14,16 @@ public class PatchProcessor {
     public static JsonNode apply(ObjectMapper mapper, JsonNode patchDocument,
             JsonNode rootDocument) throws IOException, JsonPatchFailedException {
 
-        List<JsonPatchInstruction> jsonPatchInstructions = new ArrayList<>();
+        List<JsonPatchOperation> jsonPatchOperations = new ArrayList<>();
 
         try {
-            Collections.addAll(jsonPatchInstructions, mapper.convertValue(patchDocument, JsonPatchInstruction[].class));
+            Collections.addAll(jsonPatchOperations, mapper.convertValue(patchDocument, JsonPatchOperation[].class));
         } catch (IllegalArgumentException e) {
             throw new JsonPatchFailedException("Patch document could not be constructed.", e);
         }
 
         //  Identify each instruction and apply each to target document
-        for (JsonPatchInstruction instruction : jsonPatchInstructions) {
+        for (JsonPatchOperation instruction : jsonPatchOperations) {
             switch (instruction.getOperation()) {
 
                 case ADD:

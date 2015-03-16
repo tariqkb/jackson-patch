@@ -10,19 +10,19 @@ public class JsonPatchFailedException extends RuntimeException {
         super(message);
     }
 
-    public JsonPatchFailedException(JsonPatchInstruction instruction, String message) {
+    public JsonPatchFailedException(JsonPatchOperation instruction, String message) {
         super(formatInstruction(instruction) + " failed: " + message);
     }
 
-    public JsonPatchFailedException(JsonPatchInstruction instruction, String message, Throwable cause) {
+    public JsonPatchFailedException(JsonPatchOperation instruction, String message, Throwable cause) {
         super(formatInstruction(instruction) + " failed: " + message, cause);
     }
 
-    public JsonPatchFailedException(JsonPatchInstruction instruction, Throwable cause) {
+    public JsonPatchFailedException(JsonPatchOperation instruction, Throwable cause) {
         super(formatInstruction(instruction) + " failed: ", cause);
     }
 
-    private static String formatInstruction(JsonPatchInstruction instruction) {
+    private static String formatInstruction(JsonPatchOperation instruction) {
         String formatted = instruction.getOperation() + " ";
         switch (instruction.getOperation()) {
 

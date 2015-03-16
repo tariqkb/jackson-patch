@@ -9,16 +9,16 @@ import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 
 import java.io.IOException;
 
-public class JsonPatchInstructionDeserializer extends JsonDeserializer<JsonPatchInstruction> {
+public class JsonPatchOperationDeserializer extends JsonDeserializer<JsonPatchOperation> {
 
     private UntypedObjectDeserializer untypedObjectDeserializer;
 
-    public JsonPatchInstructionDeserializer() {
+    public JsonPatchOperationDeserializer() {
         untypedObjectDeserializer = new UntypedObjectDeserializer();
     }
 
     @Override
-    public JsonPatchInstruction deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public JsonPatchOperation deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         untypedObjectDeserializer.resolve(ctxt);
 
         JsonNode node = jp.getCodec().readTree(jp);
@@ -28,7 +28,7 @@ public class JsonPatchInstructionDeserializer extends JsonDeserializer<JsonPatch
             throw new JsonPatchFormatException("'op' is missing or not a string: " + operationNode);
         }
 
-        JsonPatchInstruction.JsonPatchOperationType operation = JsonPatchInstruction.JsonPatchOperationType
+        JsonPatchOperationType operation = JsonPatchOperationType
                 .valueOf(operationNode.asText().toUpperCase());
 
         JsonNode pathNode = node.get("path");
@@ -36,27 +36,25 @@ public class JsonPatchInstructionDeserializer extends JsonDeserializer<JsonPatch
             throw new JsonPatchFormatException("'path' is missing or not a string: " + pathNode);
         }
 
-        if (operation == JsonPatchInstruction.JsonPatchOperationType.REMOVE) {
-            return new JsonPatchInstruction(operation, JsonPointer.compile(pathNode.asText()));
-        } else if (operation == JsonPatchInstruction.JsonPatchOperationType.COPY || operation == JsonPatchInstruction
-                .JsonPatchOperationType.MOVE) {
+        if (operation == JsonPatchOperationType.REMOVE) {
+            return new JsonPatchOperation(operation, JsonPointer.compile(pathNode.asText()));
+        } else if (operation == JsonPatchOperationType.COPY || operation == JsonPatchOperationType.MOVE) {
             JsonNode fromNode = node.get("from");
             if (fromNode == null || !fromNode.isTextual()) {
                 throw new JsonPatchFormatException(
                         "'from' is missing or not a string (" + fromNode + ") and is required " +
                                 "for operation '" + operation + "'");
             }
-            return new JsonPatchInstruction(operation, JsonPointer.compile(pathNode.asText()),
+            return new JsonPatchOperation(operation, JsonPointer.compile(pathNode.asText()),
                     JsonPointer.compile(fromNode.asText()));
-        } else if (operation == JsonPatchInstruction.JsonPatchOperationType.ADD || operation == JsonPatchInstruction
-                .JsonPatchOperationType.REPLACE || operation == JsonPatchInstruction.JsonPatchOperationType.TEST) {
+        } else if (operation == JsonPatchOperationType.ADD || operation == JsonPatchOperationType.REPLACE || operation == JsonPatchOperationType.TEST) {
             JsonNode valueNode = node.get("value");
             if (valueNode == null || valueNode.isMissingNode()) {
                 throw new JsonPatchFormatException(
                         "'value' is missing and is required for operation '" + operation + "'");
             }
 
-            return new JsonPatchInstruction(operation, JsonPointer.compile(pathNode.asText()), valueNode);
+            return new JsonPatchOperation(operation, JsonPointer.compile(pathNode.asText()), valueNode);
         }
 
         throw new RuntimeException("Unknown operation.");
