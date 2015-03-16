@@ -95,4 +95,14 @@ public class JsonPatchOperation {
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "JsonPatchOperation{" +
+                "operation=" + operation +
+                ", path=" + path +
+                ", from=" + from +
+                ", value=" + value +
+                '}';
+    }
 }
