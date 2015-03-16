@@ -2,9 +2,10 @@ package io.progix.jackson.test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.progix.jackson.JsonPatchFailedException;
+import io.progix.jackson.JsonPatchOperation;
+import io.progix.jackson.exceptions.JsonPatchFailedException;
 import io.progix.jackson.JsonTestCase;
-import io.progix.jackson.PatchProcessor;
+import io.progix.jackson.JsonPatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,10 +35,10 @@ public class SpecTests {
         }
 
         try {
-            JsonNode patchNode = mapper.readTree(testCase.getPatch());
+            JsonPatchOperation[] patchOperations = mapper.convertValue(testCase.getPatch(), JsonPatchOperation[].class);
             JsonNode documentNode = mapper.readTree(testCase.getDoc());
 
-            JsonNode resultNode = PatchProcessor.apply(mapper, patchNode, documentNode);
+            JsonNode resultNode = JsonPatch.apply(patchOperations, documentNode);
             if (testCase.isErrorCase()) {
                 fail("Expected error, but there was none: " + testCase.getError());
             }
@@ -49,7 +50,7 @@ public class SpecTests {
                 assertThat(resultNode).isEqualTo(expectedNode);
             }
 
-        } catch (JsonPatchFailedException e) {
+        } catch (JsonPatchFailedException | IllegalArgumentException e) {
             if (!testCase.isErrorCase()) {
                 fail("Did not expect error but got one", e);
             }

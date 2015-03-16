@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class JsonTestCase {
 
     @JsonRawValue
-    private Object patch;
+    private JsonNode patch;
     @JsonRawValue
     private Object doc;
     @JsonRawValue
@@ -19,8 +19,8 @@ public class JsonTestCase {
     public JsonTestCase() {
     }
 
-    public String getPatch() {
-        return patch == null ? null : patch.toString();
+    public JsonNode getPatch() {
+        return patch;
     }
 
     public String getDoc() {

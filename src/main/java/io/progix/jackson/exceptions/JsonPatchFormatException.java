@@ -1,4 +1,4 @@
-package io.progix.jackson;
+package io.progix.jackson.exceptions;
 
 import java.io.IOException;
 
