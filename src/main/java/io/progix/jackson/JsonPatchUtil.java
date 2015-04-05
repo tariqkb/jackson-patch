@@ -2,14 +2,11 @@ package io.progix.jackson;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.progix.jackson.exceptions.JsonPatchFormatException;
 
 public class JsonPatchUtil {
-
-    private final static ObjectMapper mapper = new ObjectMapper();
 
     public static JsonNode remove(JsonPointer pathPointer, JsonNode rootNode) throws JsonPatchFormatException {
         rootNode = rootNode.deepCopy();
